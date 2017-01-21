@@ -21,12 +21,12 @@
     </item>
     <item
         is-multidex="true"
-        jar="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jar="/Applications/Android Studio.app/Contents/gradle/m2repository/com/google/code/gson/gson/2.2.4/gson-2.2.4.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="a3188f1d1d439ed7678144807186cdf5ff01fed0">
-        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_4f5181a7b69156e3cf1bd2645566aa8104021c32/classes.dex" />
+        sha1="a60a5e993c98c864010053cb901b7eab25306568">
+        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.2.4_d0ce76b63ce905fbab3c5d385c8e1b8692010f19/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -39,11 +39,20 @@
     </item>
     <item
         is-multidex="true"
+        jar="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="06c1d7d9feb503b82a6ff31cc9a4cc5279451122">
+        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_4f5181a7b69156e3cf1bd2645566aa8104021c32/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="3affe63d149db07bbc58f22cf421972bb16b10b8">
+        sha1="9f0903d4d0bbcb824c075435d1e616fa06ef38c7">
         <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_2b5e094d308f019cc48635bcd0e3815ae5ec6a14/classes.dex" />
     </item>
     <item
