@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="aee64634871d88a419d59eb743c1258a60f19700">
+        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-core-ui-25.1.0_927c015f90598f6085ec8afc5dacdb2ff6d1c4bd/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="b266c8faa5af72e579b9da36ef35053ffed6ac64">
+        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-25.1.0_6f8114467be60aa3abdd2b7d6b034e2a107c5b12/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="a3188f1d1d439ed7678144807186cdf5ff01fed0">
+        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_4f5181a7b69156e3cf1bd2645566aa8104021c32/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
+        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-compat-25.1.0_e42c23cc5a3b7b17e354582e83ede030c15401c4/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="3affe63d149db07bbc58f22cf421972bb16b10b8">
+        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_2b5e094d308f019cc48635bcd0e3815ae5ec6a14/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/administrador/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/25.1.0/support-annotations-25.1.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="64cb6b229a8bdfd907bc8dd46839a0053e4c018d">
+        <dex dex="/Users/administrador/Downloads/android-architecture-todo-mvp/VirginiaBeach/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-25.1.0_aea9301ca214e75fda09a647c698761c85ac772a/classes.dex" />
+    </item>
+
+</items>
