@@ -78,8 +78,8 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
             // request the location. Once obtained we will update the list
             requestLocation();
         } else {
-            // ask for permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            // ask for permissions
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
         // request places from the data source

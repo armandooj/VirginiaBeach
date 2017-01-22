@@ -1,8 +1,12 @@
 package com.mobyview.demo.virginiabeach;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageSwitcher;
 import android.widget.LinearLayout;
@@ -16,17 +20,29 @@ import com.mobyview.demo.virginiabeach.data.Restaurant;
 import com.mobyview.demo.virginiabeach.utilities.Constants;
 import com.mobyview.demo.virginiabeach.utilities.Utilities;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Overlay;
 
 /**
+ * A detail view of {@link Place} elements.
+ *
  * @author Armando Ochoa
  */
 public class PlaceDetailActivity extends Activity {
 
+    private Place place;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // this is how to manually change the cache dir (no need to ask for permission)
+        Configuration.getInstance().setOsmdroidTileCache(getCacheDir());
+
         setContentView(R.layout.activity_place_detail);
 
         Utilities.setCustomActionBar(this, getActionBar(), getString(R.string.action_bar_title), true);
@@ -44,7 +60,8 @@ public class PlaceDetailActivity extends Activity {
 
         if (object != null) {
             // set the views that correspond to both restaurants and attractions
-            setupCommonViews((Place) object);
+            place = (Place) object;
+            setupCommonViews(place);
             // specific views
             setupSpecificViews(object);
         }
@@ -91,10 +108,20 @@ public class PlaceDetailActivity extends Activity {
         // let's use open street maps. Yay!
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
+        map.getOverlays().add(touchOverlay);
+
+        // point to the place's location
+        if (place.getGeo() != null) {
+            String[] coords = place.getGeo().getLatlon().split(",");
+            IMapController mapController = map.getController();
+            mapController.setZoom(18);
+            GeoPoint startPoint = new GeoPoint(Float.valueOf(coords[0]), Float.valueOf(coords[1]));
+            mapController.setCenter(startPoint);
+        }
     }
 
     private void setupSpecificViews(Object object) {
-        // TODO set the image / title to black
+        // TODO set the image
         ImageSwitcher placeHolder = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         TextView category = (TextView) findViewById(R.id.category);
 
@@ -104,7 +131,6 @@ public class PlaceDetailActivity extends Activity {
             if (attraction.getAttractionCategory() != null) {
                 category.setText(attraction.getAttractionCategory().getName());
             }
-
             TextView priceTextView = (TextView) findViewById(R.id.price);
             priceTextView.setText(attraction.getPriceRange());
         } else if (object instanceof Restaurant) {
@@ -116,7 +142,22 @@ public class PlaceDetailActivity extends Activity {
 
             RelativeLayout priceLayout = (RelativeLayout) findViewById(R.id.price_container);
             priceLayout.setVisibility(View.GONE);
-
         }
     }
+
+    private Overlay touchOverlay = new Overlay() {
+
+        @Override
+        public void draw(Canvas c, MapView osmv, boolean shadow) {}
+
+        @Override
+        public boolean onSingleTapConfirmed(final MotionEvent e, final MapView mapView) {
+            // open google maps
+            String[] coords = place.getGeo().getLatlon().split(",");
+            String uri = "geo:0,0" + coords[0] + "," + coords[1] + "?q=" + place.getAddress();
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            startActivity(intent);
+            return false;
+        }
+    };
 }
