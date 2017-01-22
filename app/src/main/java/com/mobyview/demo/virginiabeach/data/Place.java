@@ -1,5 +1,8 @@
 package com.mobyview.demo.virginiabeach.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Armando Ochoa
  */
@@ -8,6 +11,7 @@ public class Place {
     private long id;
     private String title;
 //    private Image image;
+    @SerializedName("location_area")
     private LocationArea locationArea;
 //    private Description description;
     private Geo geo;
@@ -69,45 +73,6 @@ public class Place {
         this.address = address;
     }
 
-    public class Image {
-
-        private File file;
-
-        public File getFile() {
-            return file;
-        }
-
-        public void setFile(File file) {
-            this.file = file;
-        }
-
-        public class File {
-
-            private String uri;
-
-            public String getUri() {
-                return uri;
-            }
-
-            public void setUri(String uri) {
-                this.uri = uri;
-            }
-        }
-    }
-
-    public class LocationArea {
-
-        private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
     public class Description {
 
         private String value;
@@ -118,19 +83,6 @@ public class Place {
 
         public void setValue(String value) {
             this.value = value;
-        }
-    }
-
-    public class Geo {
-
-        private String latlon;
-
-        public String getLatlon() {
-            return latlon;
-        }
-
-        public void setLatlon(String latlon) {
-            this.latlon = latlon;
         }
     }
 }

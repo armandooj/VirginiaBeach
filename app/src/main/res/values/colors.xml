@@ -2,5 +2,8 @@
 <resources>
     <color name="colorPrimary">#49B4E7</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="lightGray">#fff3f3f3</color>
+    <color name="grayFont">#7D8184</color>
+    <color name="darkGrayFont">#3F484E</color>
     <color name="colorAccent">#FF4081</color>
 </resources>

@@ -1,6 +1,5 @@
 package com.mobyview.demo.virginiabeach.data.source;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -24,7 +23,7 @@ public class DataSource {
     private static final String TAG = DataSource.class.getName();
 
     static final String baseURL = "http://virginia.mobyview.eu/api/entities";
-    static final String pageSize = "2";
+    static final String pageSize = "10";
     static final String charset = "UTF-8";
 
     private static DataSource instance;
