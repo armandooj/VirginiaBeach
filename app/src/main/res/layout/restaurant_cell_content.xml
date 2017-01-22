@@ -19,7 +19,7 @@
             android:background="@drawable/bg_cel_restaurant">
 
             <ImageView
-                android:src="@drawable/splash"
+                android:src="@drawable/placeholder_restaurant"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"

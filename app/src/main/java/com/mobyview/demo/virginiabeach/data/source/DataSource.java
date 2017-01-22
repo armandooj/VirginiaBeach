@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.mobyview.demo.virginiabeach.data.source.remote.RemoteDataSource;
+import com.mobyview.demo.virginiabeach.utilities.Constants;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -22,7 +23,6 @@ public class DataSource {
 
     private static final String TAG = DataSource.class.getName();
 
-    public static final int PAGE_SIZE = 10;
     static final String baseURL = "http://virginia.mobyview.eu/api/entities";
     static final String charset = "UTF-8";
 
@@ -50,7 +50,7 @@ public class DataSource {
             String query = String.format("parameters[type]=%s&page=%s&pagesize=%s&sort=%s",
             URLEncoder.encode(type, charset),
             URLEncoder.encode(String.valueOf(page), charset),
-            URLEncoder.encode((PAGE_SIZE / 2) + "", charset),
+            URLEncoder.encode((Constants.PAGE_SIZE / 2) + "", charset),
             URLEncoder.encode("title", charset));
 
             // get data from remote data source

@@ -2,4 +2,9 @@
     <string name="app_name">VirginiaBeach</string>
     <string name="action_bar_title">Around You</string>
     <string name="title_activity_place_list">VirginiaBeach</string>
+    <string name="about">About this place:</string>
+    <string name="no_description">There is no description.</string>
+    <string name="location">Location area:</string>
+    <string name="price_range">Price range:</string>
+    <string name="address">Address</string>
 </resources>

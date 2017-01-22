@@ -4,13 +4,20 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.support.v4.content.ContextCompat;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mobyview.demo.virginiabeach.R;
+import com.mobyview.demo.virginiabeach.data.Image;
 
 /**
  * @author Armando Ochoa
@@ -23,11 +30,33 @@ public class Utilities {
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
-    public static ActionBar setCustomActionBar(Activity activity, ActionBar actionBar, String title) {
-        if (actionBar != null) {
-            ViewGroup actionBarLayout = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.custom_action_bar, null);
+    // The distance from currentLocation to coords in miles
+    public static int getDistanceFromCoordinates(Location currentLocation, String[] coords) {
+        Location destination = new Location("destination");
+        destination.setLatitude(Float.valueOf(coords[0]));
+        destination.setLongitude(Float.valueOf(coords[1]));
+        // get the distance in miles
+        return (int) ((currentLocation.distanceTo(destination) / 1000) * Constants.KM_TO_MILE);
+    }
 
-            actionBar.setDisplayShowHomeEnabled(false);
+    public static ActionBar setCustomActionBar(final Activity activity, ActionBar actionBar, String title, boolean backButtonEnabled) {
+        if (actionBar != null) {
+            ViewGroup actionBarLayout;
+            if (backButtonEnabled) {
+                actionBarLayout = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.custom_action_bar_back, null);
+                ImageView back = (ImageView) actionBarLayout.findViewById(R.id.back);
+                recreatePressedState(back);
+                back.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        activity.finish();
+                    }
+                });
+            } else {
+                actionBarLayout = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.custom_action_bar, null);
+                actionBar.setDisplayShowHomeEnabled(false);
+            }
+
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(actionBarLayout);
@@ -39,6 +68,29 @@ public class Utilities {
             actionBarTitle.setTypeface(font);
         }
         return actionBar;
+    }
+
+    public static void recreatePressedState(final ImageView imageView) {
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            private Rect rect;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    imageView.setColorFilter(Color.argb(50, 0, 0, 0));
+                    rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    imageView.setColorFilter(Color.argb(0, 0, 0, 0));
+                }
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())) {
+                        imageView.setColorFilter(Color.argb(0, 0, 0, 0));
+                    }
+                }
+                return false;
+            }
+        });
     }
 
 }

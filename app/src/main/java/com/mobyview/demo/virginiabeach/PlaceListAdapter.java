@@ -1,6 +1,7 @@
 package com.mobyview.demo.virginiabeach;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.support.v4.content.ContextCompat;
@@ -12,19 +13,23 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.mobyview.demo.virginiabeach.data.Attraction;
 import com.mobyview.demo.virginiabeach.data.Restaurant;
+import com.mobyview.demo.virginiabeach.utilities.Constants;
+import com.mobyview.demo.virginiabeach.utilities.Utilities;
 
 import java.util.List;
 
 /**
+ * An adapter with two view types for: {@link Attraction} and {@link Restaurant}.
+ *
  * @author Armando Ochoa
  */
 public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Location currentLocation;
     private List<Object> places;
-    private final int ATTRACTION = 0, RESTAURANT = 1;
     private int lastPosition = -1;
 
     public PlaceListAdapter(List<Object> attractions) {
@@ -35,9 +40,9 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public int getItemViewType(int position) {
         // TODO Add a default case
         if (places.get(position) instanceof Attraction) {
-            return ATTRACTION;
+            return Constants.ATTRACTION;
         } else {
-            return RESTAURANT;
+            return Constants.RESTAURANT;
         }
     }
 
@@ -46,7 +51,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         RecyclerView.ViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        if (viewType == ATTRACTION) {
+        if (viewType == Constants.ATTRACTION) {
             View aView = inflater.inflate(R.layout.attraction_cell_content, parent, false);
             viewHolder = new AttractionViewHolder(aView);
         } else {
@@ -58,11 +63,13 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        final Object place;
         // populate the rows with real data
-        if (holder.getItemViewType() == ATTRACTION) {
+        if (holder.getItemViewType() == Constants.ATTRACTION) {
             AttractionViewHolder viewHolder = (AttractionViewHolder) holder;
-            Attraction attraction = (Attraction) places.get(position);
+            final Attraction attraction = (Attraction) places.get(position);
+            place = attraction;
             viewHolder.titleTextView.setText(attraction.getTitle());
             if (attraction.getLocationArea() != null) {
                 viewHolder.locationTextView.setText(attraction.getLocationArea().getName());
@@ -70,21 +77,22 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if (currentLocation != null && attraction.getGeo() != null) {
                 if (attraction.getGeo().getLatlon() != null) {
                     String[] coords = attraction.getGeo().getLatlon().split(",");
-                    viewHolder.distanceTextView.setText(getDistanceFromCoordinates(coords) + " miles");
+                    viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
                 }
             }
             if (attraction.getAttractionCategory() != null) {
                 viewHolder.categoryTextView.setText(attraction.getAttractionCategory().getName());
             }
             if (attraction.getPriceRange() != null) {
+                viewHolder.priceTextView.setVisibility(View.VISIBLE);
                 viewHolder.priceTextView.setText(attraction.getPriceRange());
             } else {
                 viewHolder.priceTextView.setVisibility(View.GONE);
             }
-            setAnimation(holder.itemView, position);
         } else {
             RestaurantViewHolder viewHolder = (RestaurantViewHolder) holder;
-            Restaurant restaurant = (Restaurant) places.get(position);
+            final Restaurant restaurant = (Restaurant) places.get(position);
+            place = restaurant;
             viewHolder.titleTextView.setText(restaurant.getTitle());
             if (restaurant.getLocationArea() != null) {
                 viewHolder.locationTextView.setText(restaurant.getLocationArea().getName());
@@ -92,11 +100,26 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if (currentLocation != null && restaurant.getGeo() != null) {
                 if (restaurant.getGeo().getLatlon() != null) {
                     String[] coords = restaurant.getGeo().getLatlon().split(",");
-                    viewHolder.distanceTextView.setText(getDistanceFromCoordinates(coords) + " miles");
+                    viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
                 }
             }
-            setAnimation(holder.itemView, position);
         }
+        // use a fading animation
+        setAnimation(holder.itemView, position);
+        // on click go to detail
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), PlaceDetailActivity.class);
+                if (place instanceof Attraction) {
+                    intent.putExtra("type", Constants.ATTRACTION);
+                } else if (place instanceof Restaurant) {
+                    intent.putExtra("type", Constants.RESTAURANT);
+                }
+                intent.putExtra("object", new Gson().toJson(place));
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -123,19 +146,12 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public int getDistanceFromCoordinates(String[] coords) {
-        Location destination = new Location("destination");
-        destination.setLatitude(Float.valueOf(coords[0]));
-        destination.setLongitude(Float.valueOf(coords[1]));
-        // get the distance in miles
-        return (int) ((currentLocation.distanceTo(destination) / 1000) * 0.621371f);
-    }
-
     public void setCurrentLocation(Location currentLocation) {
         this.currentLocation = currentLocation;
     }
 
     public class AttractionViewHolder extends RecyclerView.ViewHolder {
+
         public View view;
         public TextView titleTextView;
         public TextView locationTextView;

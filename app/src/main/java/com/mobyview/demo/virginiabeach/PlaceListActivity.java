@@ -22,6 +22,7 @@ import com.mobyview.demo.virginiabeach.data.Place;
 import com.mobyview.demo.virginiabeach.data.Restaurant;
 import com.mobyview.demo.virginiabeach.data.source.DataSource;
 import com.mobyview.demo.virginiabeach.data.source.DataSourceCallback;
+import com.mobyview.demo.virginiabeach.utilities.Constants;
 import com.mobyview.demo.virginiabeach.utilities.Utilities;
 
 import java.lang.reflect.Type;
@@ -58,7 +59,7 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_list);
 
-        Utilities.setCustomActionBar(this, getActionBar(), getString(R.string.action_bar_title));
+        Utilities.setCustomActionBar(this, getActionBar(), getString(R.string.action_bar_title), false);
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         recyclerView = (RecyclerView) findViewById(R.id.places_recycler_view);
@@ -120,35 +121,6 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
         }
     }
 
-    private void setOrUpdateList(List<Object> newPlaces) {
-        if (places == null) {
-            // populate list
-            places = newPlaces;
-            adapter = new PlaceListAdapter(places);
-            if (currentLocation != null) {
-                adapter.setCurrentLocation(currentLocation);
-            }
-            recyclerView.setAdapter(adapter);
-        } else {
-            // merge both lists
-            places.addAll(newPlaces);
-            // sort by title
-            Collections.sort(places, new Comparator<Object>() {
-                @Override
-                public int compare(Object object1, Object object2) {
-                    return ((Place) object1).getTitle().compareToIgnoreCase(((Place) object2).getTitle());
-                }
-            });
-            recyclerView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-            // update the list
-            adapter.notifyDataSetChanged();
-
-            isLoading = false;
-            isLastPage = true;
-        }
-    }
-
     private void setOrUpdateList() {
         // wait until both lists are ready
         if (attractions != null && restaurants != null) {
@@ -204,7 +176,7 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
             if (!isLoading && isLastPage) {
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0
-                        && totalItemCount >= DataSource.PAGE_SIZE) {
+                        && totalItemCount >= Constants.PAGE_SIZE) {
                     // load more items
                     page++;
                     isLoading = true;

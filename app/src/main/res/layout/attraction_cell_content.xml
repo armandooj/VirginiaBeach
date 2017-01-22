@@ -19,7 +19,7 @@
             android:background="@drawable/bg_cel_attraction">
 
             <ImageView
-                android:src="@drawable/splash"
+                android:src="@drawable/placeholder_attraction"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"

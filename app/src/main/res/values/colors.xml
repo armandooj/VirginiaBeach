@@ -6,4 +6,6 @@
     <color name="grayFont">#7D8184</color>
     <color name="darkGrayFont">#3F484E</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorPlaceholder">#DFE4E7</color>
+    <color name="separator">#E6E6E6</color>
 </resources>
