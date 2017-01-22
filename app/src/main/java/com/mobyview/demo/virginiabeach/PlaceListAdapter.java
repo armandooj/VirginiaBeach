@@ -100,6 +100,16 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
+    public void onViewDetachedFromWindow(final RecyclerView.ViewHolder holder) {
+        // fix problems on fast scroll
+        if (holder instanceof AttractionViewHolder) {
+            ((AttractionViewHolder) holder).itemView.clearAnimation();
+        } else if (holder instanceof RestaurantViewHolder) {
+            ((RestaurantViewHolder) holder).itemView.clearAnimation();
+        }
+    }
+
+    @Override
     public int getItemCount() {
         return places.size();
     }
