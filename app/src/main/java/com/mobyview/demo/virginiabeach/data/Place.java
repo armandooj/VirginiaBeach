@@ -2,11 +2,18 @@ package com.mobyview.demo.virginiabeach.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmModel;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
+
 /**
  * @author Armando Ochoa
  */
-public class Place {
+@RealmClass
+public class Place implements RealmModel {
 
+    @PrimaryKey
     private long id;
     private String title;
 //    private Image image;
@@ -15,6 +22,9 @@ public class Place {
 //    private Description description;
     private Geo geo;
     private String address;
+
+    // not an actual attribute, but an auxiliary one
+    public int page;
 
     public long getId() {
         return id;
@@ -70,18 +80,5 @@ public class Place {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public class Description {
-
-        private String value;
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
     }
 }

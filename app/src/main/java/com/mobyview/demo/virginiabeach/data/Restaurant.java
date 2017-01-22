@@ -1,7 +1,11 @@
 package com.mobyview.demo.virginiabeach.data;
 
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
+
 /**
  * @author Armando Ochoa
  */
-public class Restaurant extends Place {
+@RealmClass
+public class Restaurant extends Place implements RealmModel {
 }

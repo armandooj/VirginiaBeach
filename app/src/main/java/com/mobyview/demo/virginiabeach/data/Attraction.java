@@ -2,10 +2,14 @@ package com.mobyview.demo.virginiabeach.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
+
 /**
  * @author Armando Ochoa
  */
-public class Attraction extends Place {
+@RealmClass
+public class Attraction extends Place implements RealmModel {
 
     @SerializedName("attraction_category")
     private AttractionCategory attractionCategory;

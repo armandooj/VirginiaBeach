@@ -85,8 +85,8 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
         // request places from the data source
         isLoading = true;
         DataSource repository = DataSource.getInstance();
-        repository.getPlaces("attraction", page, new AttractionsCallback());
-        repository.getPlaces("restaurant", page, new RestaurantsCallback());
+        repository.getPlaces(getApplicationContext(), Constants.ATTRACTION, page, new AttractionsCallback());
+        repository.getPlaces(getApplicationContext(), Constants.RESTAURANT, page, new RestaurantsCallback());
     }
 
     @Override
@@ -183,8 +183,8 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
                     isLastPage = false;
                     progressBar.setVisibility(View.VISIBLE);
                     DataSource repository = DataSource.getInstance();
-                    repository.getPlaces("attraction", page, new AttractionsCallback());
-                    repository.getPlaces("restaurant", page, new RestaurantsCallback());
+                    repository.getPlaces(getApplicationContext(), Constants.ATTRACTION, page, new AttractionsCallback());
+                    repository.getPlaces(getApplicationContext(), Constants.RESTAURANT, page, new RestaurantsCallback());
                 }
             }
         }
@@ -197,6 +197,7 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
             // convert the JSON objects into attractions
             Type collectionType = new TypeToken<Collection<Attraction>>(){}.getType();
             attractions = new Gson().fromJson(response , collectionType);
+            for (Attraction attraction : attractions) { attraction.page = page; };
             setOrUpdateList();
         }
 
@@ -213,6 +214,7 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
             // convert the JSON objects into restaurants
             Type collectionType = new TypeToken<Collection<Restaurant>>(){}.getType();
             restaurants = new Gson().fromJson(response , collectionType);
+            for (Restaurant restaurant : restaurants) { restaurant.page = page; };
             setOrUpdateList();
         }
 

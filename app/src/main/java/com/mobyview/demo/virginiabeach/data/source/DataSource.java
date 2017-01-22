@@ -1,8 +1,10 @@
 package com.mobyview.demo.virginiabeach.data.source;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.mobyview.demo.virginiabeach.data.source.local.LocalDataSource;
 import com.mobyview.demo.virginiabeach.data.source.remote.RemoteDataSource;
 import com.mobyview.demo.virginiabeach.utilities.Constants;
 
@@ -27,6 +29,7 @@ public class DataSource {
     static final String charset = "UTF-8";
 
     private static DataSource instance;
+    private LocalDataSource localDataSource;
     private RemoteDataSource remoteDataSource;
 
     private DataSource() {
@@ -45,32 +48,48 @@ public class DataSource {
         }
     }
 
-    public void getPlaces(String type, int page, final DataSourceCallback callback) {
-        try {
-            String query = String.format("parameters[type]=%s&page=%s&pagesize=%s&sort=%s",
-            URLEncoder.encode(type, charset),
-            URLEncoder.encode(String.valueOf(page), charset),
-            URLEncoder.encode((Constants.PAGE_SIZE / 2) + "", charset),
-            URLEncoder.encode("title", charset));
+    public void getPlaces(Context c, final int type, final int page, final DataSourceCallback callback) {
+        // first try to get cached places
+        localDataSource = new LocalDataSource(c);
+        localDataSource.getPlaces(type, page, new DataSourceCallback() {
 
-            // get data from remote data source
-            remoteDataSource = new RemoteDataSource(new DataSourceCallback() {
+            @Override
+            public void onDataLoaded(String response) {
+                // respond immediately with cache if available
+                Log.d("DataSource", "cache: " + response);
+                callback.onDataLoaded(response);
+            }
 
-                @Override
-                public void onDataLoaded(String response) {
-                    // TODO persist objects with Realm (LocalDataSource)
-                    callback.onDataLoaded(response);
+            @Override
+            public void onDataNotAvailable(Exception e) {
+                // get data from remote data source
+                try {
+                    String query = String.format("parameters[type]=%s&page=%s&pagesize=%s&sort=%s",
+                            URLEncoder.encode((type == Constants.RESTAURANT) ? "restaurant" : "attraction", charset),
+                            URLEncoder.encode(String.valueOf(page), charset),
+                            URLEncoder.encode((Constants.PAGE_SIZE / 2) + "", charset),
+                            URLEncoder.encode("title", charset));
+
+                    // get data from remote data source
+                    remoteDataSource = new RemoteDataSource(new DataSourceCallback() {
+
+                        @Override
+                        public void onDataLoaded(String response) {
+                            // TODO persist objects with Realm (LocalDataSource)
+                            callback.onDataLoaded(response);
+                        }
+
+                        @Override
+                        public void onDataNotAvailable(Exception e) {
+                            callback.onDataNotAvailable(e);
+                        }
+                    }, baseURL + "?" + query);
+                    remoteDataSource.execute();
+                } catch (UnsupportedEncodingException ex) {
+                    Log.e(TAG, "Error encoding parameters: " + ex.getMessage());
+                    callback.onDataNotAvailable(ex);
                 }
-
-                @Override
-                public void onDataNotAvailable(Exception e) {
-                    callback.onDataNotAvailable(e);
-                }
-            }, baseURL + "?" + query);
-            remoteDataSource.execute();
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "Error encoding parameters: " + e.getMessage());
-            callback.onDataNotAvailable(e);
-        }
+            }
+        });
     }
 }
