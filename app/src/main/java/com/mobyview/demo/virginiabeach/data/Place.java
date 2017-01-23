@@ -16,10 +16,10 @@ public class Place extends RealmObject {
     @PrimaryKey
     private long id;
     private String title;
-//    private Image image;
+    private Image image;
     @SerializedName("location_area")
     private LocationArea locationArea;
-//    private Description description;
+    private Description description;
     private Geo geo;
     private String address;
 
@@ -49,13 +49,13 @@ public class Place extends RealmObject {
         this.title = title;
     }
 
-//    public Image getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(Image image) {
-//        this.image = image;
-//    }
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
 
     public LocationArea getLocationArea() {
         return locationArea;
@@ -65,13 +65,13 @@ public class Place extends RealmObject {
         this.locationArea = locationArea;
     }
 
-//    public Description getDescription() {
-//        return description;
-//    }
-//
-//    public void setDescription(Description description) {
-//        this.description = description;
-//    }
+    public Description getDescription() {
+        return description;
+    }
+
+    public void setDescription(Description description) {
+        this.description = description;
+    }
 
     public Geo getGeo() {
         return geo;

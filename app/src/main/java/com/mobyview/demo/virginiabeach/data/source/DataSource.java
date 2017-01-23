@@ -5,7 +5,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.mobyview.demo.virginiabeach.data.Description;
+import com.mobyview.demo.virginiabeach.data.Image;
 import com.mobyview.demo.virginiabeach.data.Place;
 import com.mobyview.demo.virginiabeach.data.source.local.LocalDataSource;
 import com.mobyview.demo.virginiabeach.data.source.remote.RemoteDataSource;
@@ -84,7 +91,11 @@ public class DataSource {
                         public void onDataLoaded(String response) {
                             // convert the JSON objects into places
                             Type collectionType = new TypeToken<Collection<Place>>(){}.getType();
-                            List<Place> places = new Gson().fromJson(response , collectionType);
+                            Gson gson = new GsonBuilder()
+                                    .registerTypeAdapter(Description.class, new CustomDescriptionDeserializer())
+                                    .registerTypeAdapter(Image.class, new CustomImageDeserializer())
+                                    .create();
+                            List<Place> places = gson.fromJson(response , collectionType);
                             for (Place place : places) {
                                 place.setPageNumber(page);
                                 place.setPlaceType(type);
@@ -106,5 +117,36 @@ public class DataSource {
                 }
             }
         });
+    }
+
+    private class CustomDescriptionDeserializer implements JsonDeserializer<Description> {
+
+        @Override
+        public Description deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+            if (je.isJsonArray()) {
+                return null;
+            } else {
+                Description description = new Description();
+                JsonElement descriptionValue = je.getAsJsonObject().get("value");
+                description.setValue(descriptionValue.getAsString());
+                return description;
+            }
+        }
+    }
+
+    private class CustomImageDeserializer implements JsonDeserializer<Image> {
+
+        @Override
+        public Image deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+            if (je.isJsonArray()) {
+                return null;
+            } else {
+                Image image = new Image();
+                JsonElement file = je.getAsJsonObject().get("file");
+                JsonElement uriFull = file.getAsJsonObject().get("uri_full");
+                image.setUri(uriFull.getAsString());
+                return image;
+            }
+        }
     }
 }

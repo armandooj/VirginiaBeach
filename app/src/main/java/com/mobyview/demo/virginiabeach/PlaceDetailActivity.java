@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.mobyview.demo.virginiabeach.data.Place;
 import com.mobyview.demo.virginiabeach.utilities.Utilities;
+import com.squareup.picasso.Picasso;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -46,10 +47,8 @@ public class PlaceDetailActivity extends Activity {
 
         // retrieve the place from the bundle
         String stringObject = getIntent().getExtras().getString("object");
-        int type = getIntent().getExtras().getInt("type");
 
         place = new Gson().fromJson(stringObject, Place.class);
-
         if (place != null) {
             // set the views that correspond to both restaurants and attractions
             setupCommonViews(place);
@@ -59,6 +58,10 @@ public class PlaceDetailActivity extends Activity {
     }
 
     private void setupCommonViews(Place place) {
+        if (place.getImage() != null) {
+            ImageView image = (ImageView) findViewById(R.id.image);
+            Picasso.with(this).load(place.getImage().getUri()).into(image);
+        }
         Typeface mFont = Typeface.createFromAsset(getAssets(), "fonts/montserrat_regular.otf");
         Typeface oFont = Typeface.createFromAsset(getAssets(), "fonts/opensans_regular.ttf");
 
@@ -71,8 +74,9 @@ public class PlaceDetailActivity extends Activity {
 
         TextView description = (TextView) findViewById(R.id.description);
         description.setTypeface(oFont);
-        // TODO put it back once the description works
-        // description.setText(place.getDescription());
+        if (place.getDescription() != null) {
+            description.setText(place.getDescription().getValue());
+        }
 
         TextView location = (TextView) findViewById(R.id.location);
         location.setTypeface(mFont);
@@ -112,19 +116,14 @@ public class PlaceDetailActivity extends Activity {
     }
 
     private void setupSpecificViews(Place place) {
-        // TODO set the image
-        ImageSwitcher placeHolder = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         TextView category = (TextView) findViewById(R.id.category);
-
         if (place.getPlaceType() == Place.TYPE_ATTRACTION) {
-            placeHolder.setBackgroundResource(R.drawable.placeholder_attraction);
             if (place.getAttractionCategory() != null) {
                 category.setText(place.getAttractionCategory().getName());
             }
             TextView priceTextView = (TextView) findViewById(R.id.price);
             priceTextView.setText(place.getPriceRange());
         } else if (place.getPlaceType() == Place.TYPE_RESTAURANT) {
-            placeHolder.setBackgroundResource(R.drawable.placeholder_restaurant);
             category.setVisibility(View.GONE);
 
             LinearLayout priceSeparator = (LinearLayout) findViewById(R.id.price_separator);

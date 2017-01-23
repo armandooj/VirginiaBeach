@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.mobyview.demo.virginiabeach.data.Place;
 import com.mobyview.demo.virginiabeach.utilities.Utilities;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -83,6 +85,11 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else {
                 viewHolder.priceTextView.setVisibility(View.GONE);
             }
+            if (place.getImage() != null) {
+                Picasso.with(viewHolder.view.getContext()).load(place.getImage().getUri()).into(viewHolder.imageView);
+            } else {
+                viewHolder.imageView.setImageDrawable(ContextCompat.getDrawable(viewHolder.view.getContext(), R.drawable.placeholder_attraction));
+            }
         } else {
             RestaurantViewHolder viewHolder = (RestaurantViewHolder) holder;
             viewHolder.titleTextView.setText(place.getTitle());
@@ -91,6 +98,11 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
             if (coords != null) {
                 viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
+            }
+            if (place.getImage() != null) {
+                Picasso.with(viewHolder.view.getContext()).load(place.getImage().getUri()).into(viewHolder.imageView);
+            } else {
+                viewHolder.imageView.setImageDrawable(ContextCompat.getDrawable(viewHolder.view.getContext(), R.drawable.placeholder_restaurant));
             }
         }
         // use a fading animation
@@ -134,6 +146,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.currentLocation = currentLocation;
     }
 
+    // TODO I think we could refactor AttractionViewHolder and RestaurantViewHolder into one
     public class AttractionViewHolder extends RecyclerView.ViewHolder {
 
         public View view;
@@ -142,6 +155,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public TextView distanceTextView;
         public TextView categoryTextView;
         public TextView priceTextView;
+        public ImageView imageView;
 
         public AttractionViewHolder(View view) {
             super(view);
@@ -152,6 +166,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             distanceTextView = (TextView) view.findViewById(R.id.distance);
             categoryTextView = (TextView) view.findViewById(R.id.category);
             priceTextView = (TextView) view.findViewById(R.id.price);
+            imageView = (ImageView) view.findViewById(R.id.image);
 
             Context c = titleTextView.getContext();
             Typeface font = Typeface.createFromAsset(titleTextView.getContext().getAssets(), "fonts/montserrat_regular.otf");
@@ -175,6 +190,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public TextView titleTextView;
         public TextView locationTextView;
         public TextView distanceTextView;
+        public ImageView imageView;
 
         public RestaurantViewHolder(View view) {
             super(view);
@@ -183,6 +199,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             titleTextView = (TextView) view.findViewById(R.id.title);
             locationTextView = (TextView) view.findViewById(R.id.location);
             distanceTextView = (TextView) view.findViewById(R.id.distance);
+            imageView = (ImageView) view.findViewById(R.id.image);
 
             Context c = titleTextView.getContext();
             Typeface font = Typeface.createFromAsset(c.getAssets(), "fonts/montserrat_regular.otf");
