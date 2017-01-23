@@ -15,30 +15,24 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.mobyview.demo.virginiabeach.data.Attraction;
 import com.mobyview.demo.virginiabeach.data.Place;
-import com.mobyview.demo.virginiabeach.data.Restaurant;
 import com.mobyview.demo.virginiabeach.data.source.DataSource;
 import com.mobyview.demo.virginiabeach.data.source.DataSourceCallback;
 import com.mobyview.demo.virginiabeach.utilities.Constants;
 import com.mobyview.demo.virginiabeach.utilities.Utilities;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 /**
  * The main activity once the splash disappears from the screen.
- * It contains a list of {@link Restaurant} and {@link Attraction}.
+ * It contains a list of {@link Place}.
  *
  * @author Armando Ochoa
  */
-public class PlaceListActivity extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class PlaceListActivity extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback, DataSourceCallback {
 
     private static final String TAG = PlaceListActivity.class.getName();
 
@@ -46,9 +40,9 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
     private PlaceListAdapter adapter;
     private ProgressBar progressBar;
     private LinearLayoutManager linearLayoutManager;
-    private List<Object> places;
-    private List<Attraction> attractions;
-    private List<Restaurant> restaurants;
+    private List<Place> places;
+    private List<Place> attractions;
+    private List<Place> restaurants;
     private Location currentLocation;
 
     private boolean isLoading, isLastPage;
@@ -85,8 +79,8 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
         // request places from the data source
         isLoading = true;
         DataSource repository = DataSource.getInstance();
-        repository.getPlaces("attraction", page, new AttractionsCallback());
-        repository.getPlaces("restaurant", page, new RestaurantsCallback());
+        repository.getPlaces(getApplicationContext(), Place.TYPE_ATTRACTION, page, this);
+        repository.getPlaces(getApplicationContext(), Place.TYPE_RESTAURANT, page, this);
     }
 
     @Override
@@ -108,6 +102,25 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
         }
     }
 
+    @Override
+    public void onDataLoaded(List<Place> places, int placeType) {
+        if (placeType == Place.TYPE_ATTRACTION) {
+            attractions = places;
+        } else {
+            restaurants = places;
+        }
+        setOrUpdateList();
+    }
+
+    @Override
+    public void onDataNotAvailable(Exception e) {
+        Toast.makeText(getApplicationContext(), "Data is not available! - " + e.getMessage(), Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
+        isLoading = false;
+        isLastPage = false;
+    }
+
+
     public void requestLocation() {
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
@@ -125,14 +138,14 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
         // wait until both lists are ready
         if (attractions != null && restaurants != null) {
             // merge both lists
-            List<Object> temporal = new ArrayList<>();
+            List<Place> temporal = new ArrayList<>();
             temporal.addAll(attractions);
             temporal.addAll(restaurants);
             // sort by title
-            Collections.sort(temporal, new Comparator<Object>() {
+            Collections.sort(temporal, new Comparator<Place>() {
                 @Override
-                public int compare(Object object1, Object object2) {
-                    return ((Place) object1).getTitle().compareToIgnoreCase(((Place) object2).getTitle());
+                public int compare(Place place1, Place place2) {
+                    return (place1.getTitle().compareToIgnoreCase(place2.getTitle()));
                 }
             });
             // add the new sorted list to the full list of places
@@ -183,49 +196,10 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
                     isLastPage = false;
                     progressBar.setVisibility(View.VISIBLE);
                     DataSource repository = DataSource.getInstance();
-                    repository.getPlaces("attraction", page, new AttractionsCallback());
-                    repository.getPlaces("restaurant", page, new RestaurantsCallback());
+                    repository.getPlaces(getApplicationContext(), Place.TYPE_ATTRACTION, page, PlaceListActivity.this);
+                    repository.getPlaces(getApplicationContext(), Place.TYPE_RESTAURANT, page, PlaceListActivity.this);
                 }
             }
         }
     };
-
-    private class AttractionsCallback implements DataSourceCallback {
-
-        @Override
-        public void onDataLoaded(String response) {
-            // convert the JSON objects into attractions
-            Type collectionType = new TypeToken<Collection<Attraction>>(){}.getType();
-            attractions = new Gson().fromJson(response , collectionType);
-            setOrUpdateList();
-        }
-
-        @Override
-        public void onDataNotAvailable(Exception e) {
-            notifyDataNotAvailable(e);
-        }
-    }
-
-    private class RestaurantsCallback implements DataSourceCallback {
-
-        @Override
-        public void onDataLoaded(String response) {
-            // convert the JSON objects into restaurants
-            Type collectionType = new TypeToken<Collection<Restaurant>>(){}.getType();
-            restaurants = new Gson().fromJson(response , collectionType);
-            setOrUpdateList();
-        }
-
-        @Override
-        public void onDataNotAvailable(Exception e) {
-            notifyDataNotAvailable(e);
-        }
-    }
-
-    private void notifyDataNotAvailable(Exception e) {
-        Toast.makeText(getApplicationContext(), "Data is not available! - " + e.getMessage(), Toast.LENGTH_LONG).show();
-        progressBar.setVisibility(View.GONE);
-        isLoading = false;
-        isLastPage = false;
-    }
 }

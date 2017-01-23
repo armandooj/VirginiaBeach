@@ -21,10 +21,10 @@ import java.net.URL;
 public class RemoteDataSource extends AsyncTask<Void, Void, RemoteDataSource.AsyncTaskResult<String>> {
 
     private static final String TAG = RemoteDataSource.class.getName();
-    private DataSourceCallback callback;
+    private DataSourceCallback.RemoteDataSourceCallback callback;
     private String targetUrl;
 
-    public RemoteDataSource(DataSourceCallback callback, String targetUrl) {
+    public RemoteDataSource(DataSourceCallback.RemoteDataSourceCallback callback, String targetUrl) {
         this.callback = callback;
         this.targetUrl = targetUrl;
     }

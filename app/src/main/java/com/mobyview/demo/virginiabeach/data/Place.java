@@ -2,11 +2,18 @@ package com.mobyview.demo.virginiabeach.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * @author Armando Ochoa
  */
-public class Place {
+public class Place extends RealmObject {
 
+    public static final int TYPE_ATTRACTION = 0;
+    public static final int TYPE_RESTAURANT = 1;
+
+    @PrimaryKey
     private long id;
     private String title;
 //    private Image image;
@@ -15,6 +22,16 @@ public class Place {
 //    private Description description;
     private Geo geo;
     private String address;
+
+    @SerializedName("attraction_category")
+    private AttractionCategory attractionCategory;
+    @SerializedName("price_range")
+    private String priceRange;
+
+    // auxiliary attribute, manually set
+    private int pageNumber;
+    // restaurant or attraction, manually set
+    private int placeType;
 
     public long getId() {
         return id;
@@ -72,16 +89,35 @@ public class Place {
         this.address = address;
     }
 
-    public class Description {
+    public int getPageNumber() {
+        return pageNumber;
+    }
 
-        private String value;
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
 
-        public String getValue() {
-            return value;
-        }
+    public int getPlaceType() {
+        return placeType;
+    }
 
-        public void setValue(String value) {
-            this.value = value;
-        }
+    public void setPlaceType(int placeType) {
+        this.placeType = placeType;
+    }
+
+    public AttractionCategory getAttractionCategory() {
+        return attractionCategory;
+    }
+
+    public void setAttractionCategory(AttractionCategory attractionCategory) {
+        this.attractionCategory = attractionCategory;
+    }
+
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
     }
 }
