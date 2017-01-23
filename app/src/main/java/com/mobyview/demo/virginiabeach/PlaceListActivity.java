@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -132,7 +133,7 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
         // wait until both lists are ready
         if (attractions != null && restaurants != null) {
             // merge both lists
-            List<Place> temporal = new ArrayList<>();
+            final List<Place> temporal = new ArrayList<>();
             temporal.addAll(attractions);
             temporal.addAll(restaurants);
             // sort by title
@@ -155,8 +156,15 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
                 recyclerView.setVisibility(View.VISIBLE);
             } else {
                 // pagination: update the list
-                places.addAll(temporal);
-                adapter.notifyDataSetChanged();
+                Handler handler = new Handler();
+                final Runnable r = new Runnable() {
+                    public void run() {
+                        places.addAll(temporal);
+                        adapter.notifyDataSetChanged();
+                    }
+                };
+
+                handler.post(r);
             }
 
             progressBar.setVisibility(View.GONE);
