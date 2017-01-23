@@ -13,13 +13,13 @@ public interface DataSourceCallback {
 
     void onDataLoaded(List<Place> places, int placeType);
 
-    void onDataNotAvailable(Exception e);
+    void onDataNotAvailable(String error);
 
     interface RemoteDataSourceCallback {
 
-        void onDataLoaded(String response);
+        void onDataLoaded(List<Place> places);
 
-        void onDataNotAvailable(Exception e);
+        void onDataNotAvailable(String error);
     }
 
 }

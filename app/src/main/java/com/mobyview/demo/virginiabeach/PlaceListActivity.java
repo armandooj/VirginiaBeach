@@ -84,12 +84,6 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
     }
 
     @Override
-    protected void onDestroy(){
-        DataSource.getInstance().cancel();
-        super.onDestroy();
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
@@ -113,8 +107,8 @@ public class PlaceListActivity extends Activity implements ActivityCompat.OnRequ
     }
 
     @Override
-    public void onDataNotAvailable(Exception e) {
-        Toast.makeText(getApplicationContext(), "Data is not available! - " + e.getMessage(), Toast.LENGTH_LONG).show();
+    public void onDataNotAvailable(String error) {
+        Toast.makeText(getApplicationContext(), "Data is not available! - " + error, Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
         isLoading = false;
         isLastPage = false;

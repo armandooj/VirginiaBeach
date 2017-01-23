@@ -20,6 +20,7 @@ import io.realm.RealmResults;
 public class LocalDataSource {
 
     private Realm realm;
+    static final boolean USE_CACHE = true;
 
     public LocalDataSource(Context context) {
         realm = initializeRealm(context);
@@ -39,12 +40,16 @@ public class LocalDataSource {
 
     // Returns an empty list when no items were found
     public <E extends RealmModel> void getPlaces(int type, int page, DataSourceCallback callback) {
-        RealmResults<Place> results = realm.where(Place.class)
-                .equalTo("placeType", type)
-                .equalTo("pageNumber", page).findAll();
-        if (results.size() > 0) {
-            List<Place> items = realm.copyFromRealm(results);
-            callback.onDataLoaded(items, type);
+        if (USE_CACHE) {
+            RealmResults<Place> results = realm.where(Place.class)
+                    .equalTo("placeType", type)
+                    .equalTo("pageNumber", page).findAll();
+            if (results.size() > 0) {
+                List<Place> items = realm.copyFromRealm(results);
+                callback.onDataLoaded(items, type);
+            } else {
+                callback.onDataNotAvailable(null);
+            }
         } else {
             callback.onDataNotAvailable(null);
         }

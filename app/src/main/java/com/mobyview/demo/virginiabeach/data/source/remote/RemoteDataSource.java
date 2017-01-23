@@ -1,26 +1,35 @@
 package com.mobyview.demo.virginiabeach.data.source.remote;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.mobyview.demo.virginiabeach.data.Description;
+import com.mobyview.demo.virginiabeach.data.Image;
+import com.mobyview.demo.virginiabeach.data.Place;
 import com.mobyview.demo.virginiabeach.data.source.DataSourceCallback;
+import com.mobyview.demo.virginiabeach.utilities.Constants;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.lang.reflect.Type;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * An auxiliary {@link AsyncTask} that communicates with the server.
+ * An auxiliary class that communicates with the server.
  * On success, the callback's onDataLoaded() will be called.
  * On failure, the onDataNotAvailable() method.
  *
  * @author Armando Ochoa
  */
-public class RemoteDataSource extends AsyncTask<Void, Void, RemoteDataSource.AsyncTaskResult<String>> {
+public class RemoteDataSource  {
 
-    private static final String TAG = RemoteDataSource.class.getName();
     private DataSourceCallback.RemoteDataSourceCallback callback;
     private String targetUrl;
 
@@ -29,70 +38,65 @@ public class RemoteDataSource extends AsyncTask<Void, Void, RemoteDataSource.Asy
         this.targetUrl = targetUrl;
     }
 
-    @Override
-    protected AsyncTaskResult<String> doInBackground(Void... params) {
-        try {
-            String response = sendRequest();
-            return new AsyncTaskResult<>(response);
-        } catch (IOException e) {
-            return new AsyncTaskResult<>(e);
-        }
-    }
+    public void requestPlaces(String type, int page, String sort) {
+        Call<List<Place>> call = prepareService().listPlaces(type, page, (Constants.PAGE_SIZE / 2), sort);
+        call.enqueue(new Callback<List<Place>>() {
 
-    @Override
-    protected void onPostExecute(AsyncTaskResult<String> result) {
-        if (result.getError() != null) {
-            callback.onDataNotAvailable(result.getError());
-        } else {
-            callback.onDataLoaded(result.getResponse());
-        }
-    }
-
-    private String sendRequest() throws IOException {
-        URL url = new URL(targetUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        String response = "";
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            String line;
-            StringBuilder builder = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            // interrupt while running if the activity finishes
-            while (((line = reader.readLine()) != null) && !isCancelled()) {
-                builder.append(line);
+            @Override
+            public void onResponse(Call<List<Place>> call, Response<List<Place>> response) {
+                callback.onDataLoaded(response.body());
             }
-            response = builder.toString();
-            Log.d(TAG, "Server response: " + response);
-        }
 
-        connection.disconnect();
-        return response;
+            @Override
+            public void onFailure(Call<List<Place>> call, Throwable t) {
+                callback.onDataNotAvailable(t.getMessage());
+            }
+        });
     }
 
-    /**
-     * Auxiliary class used to delegate the error-handling task to onPostExecute().
-     */
-    public class AsyncTaskResult<T> {
-        private T response;
-        private Exception error;
+    private RemoteService prepareService() {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Description.class, new CustomDescriptionDeserializer())
+                .registerTypeAdapter(Image.class, new CustomImageDeserializer())
+                .create();
 
-        public AsyncTaskResult(T response) {
-            super();
-            this.response = response;
-        }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(targetUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
 
-        public AsyncTaskResult(Exception error) {
-            super();
-            this.error = error;
-        }
+        return retrofit.create(RemoteService.class);
+    }
 
-        public T getResponse() {
-            return response;
-        }
+    private class CustomDescriptionDeserializer implements JsonDeserializer<Description> {
 
-        public Exception getError() {
-            return error;
+        @Override
+        public Description deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+            if (je.isJsonArray()) {
+                return null;
+            } else {
+                Description description = new Description();
+                JsonElement descriptionValue = je.getAsJsonObject().get("value");
+                description.setValue(descriptionValue.getAsString());
+                return description;
+            }
         }
     }
+
+    private class CustomImageDeserializer implements JsonDeserializer<Image> {
+
+        @Override
+        public Image deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+            if (je.isJsonArray()) {
+                return null;
+            } else {
+                Image image = new Image();
+                JsonElement file = je.getAsJsonObject().get("file");
+                JsonElement uriFull = file.getAsJsonObject().get("uri_full");
+                image.setUri(uriFull.getAsString());
+                return image;
+            }
+        }
+    }
+
 }
