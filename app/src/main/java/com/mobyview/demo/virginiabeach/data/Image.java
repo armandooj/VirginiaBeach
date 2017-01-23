@@ -3,7 +3,7 @@ package com.mobyview.demo.virginiabeach.data;
 /**
  * @author Armando Ochoa
  */
-public class Image {
+public class Image  {
 
 //    private File file;
 //

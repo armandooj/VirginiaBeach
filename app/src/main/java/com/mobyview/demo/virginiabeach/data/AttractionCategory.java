@@ -1,9 +1,11 @@
 package com.mobyview.demo.virginiabeach.data;
 
+import io.realm.RealmObject;
+
 /**
  * @author Armando Ochoa
  */
-public class AttractionCategory {
+public class AttractionCategory extends RealmObject {
 
     private String name;
 

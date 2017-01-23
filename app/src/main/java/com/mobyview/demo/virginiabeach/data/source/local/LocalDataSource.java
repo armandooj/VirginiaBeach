@@ -1,13 +1,9 @@
 package com.mobyview.demo.virginiabeach.data.source.local;
 
-
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.mobyview.demo.virginiabeach.data.Attraction;
-import com.mobyview.demo.virginiabeach.data.Restaurant;
+import com.mobyview.demo.virginiabeach.data.Place;
 import com.mobyview.demo.virginiabeach.data.source.DataSourceCallback;
-import com.mobyview.demo.virginiabeach.utilities.Constants;
 
 import java.util.List;
 
@@ -17,6 +13,8 @@ import io.realm.RealmModel;
 import io.realm.RealmResults;
 
 /**
+ * Persist and retrieve objects using Realm.
+ *
  * @author Armando Ochoa
  */
 public class LocalDataSource {
@@ -40,24 +38,16 @@ public class LocalDataSource {
     }
 
     // Returns an empty list when no items were found
-//    public <E extends RealmModel> void getPlaces(int type, int page, DataSourceCallback callback) {
-//        if (type == Constants.ATTRACTION) {
-//            RealmResults<Attraction> results = realm.where(Attraction.class).findAll();
-//            if (results.size() > 0) {
-//                List<Attraction> items = realm.copyFromRealm(results);
-//                callback.onDataLoaded(new Gson().toJson(items));
-//            } else {
-//                callback.onDataNotAvailable(null);
-//            }
-//        } else if (type == Constants.RESTAURANT){
-//            RealmResults<Restaurant> results = realm.where(Restaurant.class).findAll();
-//            if (results.size() > 0) {
-//                List<Restaurant> items = realm.copyFromRealm(results);
-//                callback.onDataLoaded(new Gson().toJson(items));
-//            } else {
-//                callback.onDataNotAvailable(null);
-//            }
-//        }
-//    }
+    public <E extends RealmModel> void getPlaces(int type, int page, DataSourceCallback callback) {
+        RealmResults<Place> results = realm.where(Place.class)
+                .equalTo("placeType", type)
+                .equalTo("pageNumber", page).findAll();
+        if (results.size() > 0) {
+            List<Place> items = realm.copyFromRealm(results);
+            callback.onDataLoaded(items, type);
+        } else {
+            callback.onDataNotAvailable(null);
+        }
+    }
 }
 

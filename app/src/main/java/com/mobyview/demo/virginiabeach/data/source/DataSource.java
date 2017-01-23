@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A collection of operations to be sent to the server. A
- * {@link DataSourceCallback} must be passed to the requests in order for the
+ * A collection of operations to obtain places from cache and/or the server.
+ * A {@link DataSourceCallback} must be passed to the requests in order for the
  * {@link RemoteDataSource} to return the result and/or errors of the remoteDataSource.
  *
  * Activities should call {@method cancel()} on orientation changes and/or when
@@ -56,18 +56,19 @@ public class DataSource {
 
     public void getPlaces(Context c, final int type, final int page, final DataSourceCallback callback) {
         // first try to get cached places
-//        localDataSource = new LocalDataSource(c);
-//        localDataSource.getPlaces(type, page, new DataSourceCallback() {
-//
-//            @Override
-//            public void onDataLoaded(String response) {
-//                // respond immediately with cache if available
-//                Log.d("DataSource", "cache: " + response);
-//                callback.onDataLoaded(response);
-//            }
-//
-//            @Override
-//            public void onDataNotAvailable(Exception e) {
+        localDataSource = new LocalDataSource(c);
+        localDataSource.getPlaces(type, page, new DataSourceCallback() {
+
+            @Override
+            public void onDataLoaded(List<Place> places, int type) {
+                // respond immediately with cache if available
+                Log.d(TAG, "Using cache: " + places.size());
+                callback.onDataLoaded(places, type);
+            }
+
+            @Override
+            public void onDataNotAvailable(Exception e) {
+                Log.d(TAG, "No cache, requesting data.");
                 // get data from remote data source
                 try {
                     String query = String.format("parameters[type]=%s&page=%s&pagesize=%s&sort=%s",
@@ -88,7 +89,8 @@ public class DataSource {
                                 place.setPageNumber(page);
                                 place.setPlaceType(type);
                             };
-                            // TODO persist objects with Realm (LocalDataSource)
+                            // persist objects with Realm (LocalDataSource)
+                            localDataSource.persistObjects(Place.class, new Gson().toJson(places));
                             callback.onDataLoaded(places, type);
                         }
 
@@ -102,7 +104,7 @@ public class DataSource {
                     Log.e(TAG, "Error encoding parameters: " + ex.getMessage());
                     callback.onDataNotAvailable(ex);
                 }
-//            }
-//        });
+            }
+        });
     }
 }

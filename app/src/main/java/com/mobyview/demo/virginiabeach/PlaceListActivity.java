@@ -15,9 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.mobyview.demo.virginiabeach.data.Attraction;
 import com.mobyview.demo.virginiabeach.data.Place;
-import com.mobyview.demo.virginiabeach.data.Restaurant;
 import com.mobyview.demo.virginiabeach.data.source.DataSource;
 import com.mobyview.demo.virginiabeach.data.source.DataSourceCallback;
 import com.mobyview.demo.virginiabeach.utilities.Constants;
@@ -30,7 +28,7 @@ import java.util.List;
 
 /**
  * The main activity once the splash disappears from the screen.
- * It contains a list of {@link Restaurant} and {@link Attraction}.
+ * It contains a list of {@link Place}.
  *
  * @author Armando Ochoa
  */

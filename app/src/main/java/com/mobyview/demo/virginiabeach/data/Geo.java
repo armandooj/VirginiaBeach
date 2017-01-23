@@ -1,9 +1,11 @@
 package com.mobyview.demo.virginiabeach.data;
 
+import io.realm.RealmObject;
+
 /**
  * @author Armando Ochoa
  */
-public class Geo {
+public class Geo extends RealmObject {
 
     private String latlon;
 

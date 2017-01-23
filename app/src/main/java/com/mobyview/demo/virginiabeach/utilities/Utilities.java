@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mobyview.demo.virginiabeach.R;
-import com.mobyview.demo.virginiabeach.data.Image;
 
 /**
  * @author Armando Ochoa

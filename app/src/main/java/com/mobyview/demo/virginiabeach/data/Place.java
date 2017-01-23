@@ -2,15 +2,18 @@ package com.mobyview.demo.virginiabeach.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * @author Armando Ochoa
  */
-public class Place {
+public class Place extends RealmObject {
 
     public static final int TYPE_ATTRACTION = 0;
     public static final int TYPE_RESTAURANT = 1;
 
-    // @PrimaryKey
+    @PrimaryKey
     private long id;
     private String title;
 //    private Image image;
