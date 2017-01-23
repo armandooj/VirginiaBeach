@@ -14,10 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.mobyview.demo.virginiabeach.data.Attraction;
 import com.mobyview.demo.virginiabeach.data.Place;
-import com.mobyview.demo.virginiabeach.data.Restaurant;
-import com.mobyview.demo.virginiabeach.utilities.Constants;
 import com.mobyview.demo.virginiabeach.utilities.Utilities;
 
 import org.osmdroid.api.IMapController;
@@ -51,19 +48,13 @@ public class PlaceDetailActivity extends Activity {
         String stringObject = getIntent().getExtras().getString("object");
         int type = getIntent().getExtras().getInt("type");
 
-        Object object = null;
-        if (type == Constants.ATTRACTION) {
-            object = new Gson().fromJson(stringObject, Attraction.class);
-        } else if (type == Constants.RESTAURANT) {
-            object = new Gson().fromJson(stringObject, Restaurant.class);
-        }
+        place = new Gson().fromJson(stringObject, Place.class);
 
-        if (object != null) {
+        if (place != null) {
             // set the views that correspond to both restaurants and attractions
-            place = (Place) object;
             setupCommonViews(place);
             // specific views
-            setupSpecificViews(object);
+            setupSpecificViews(place);
         }
     }
 
@@ -120,20 +111,19 @@ public class PlaceDetailActivity extends Activity {
         }
     }
 
-    private void setupSpecificViews(Object object) {
+    private void setupSpecificViews(Place place) {
         // TODO set the image
         ImageSwitcher placeHolder = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         TextView category = (TextView) findViewById(R.id.category);
 
-        if (object instanceof Attraction) {
-            Attraction attraction = (Attraction) object;
+        if (place.getPlaceType() == Place.TYPE_ATTRACTION) {
             placeHolder.setBackgroundResource(R.drawable.placeholder_attraction);
-            if (attraction.getAttractionCategory() != null) {
-                category.setText(attraction.getAttractionCategory().getName());
+            if (place.getAttractionCategory() != null) {
+                category.setText(place.getAttractionCategory().getName());
             }
             TextView priceTextView = (TextView) findViewById(R.id.price);
-            priceTextView.setText(attraction.getPriceRange());
-        } else if (object instanceof Restaurant) {
+            priceTextView.setText(place.getPriceRange());
+        } else if (place.getPlaceType() == Place.TYPE_RESTAURANT) {
             placeHolder.setBackgroundResource(R.drawable.placeholder_restaurant);
             category.setVisibility(View.GONE);
 

@@ -1,13 +1,9 @@
 package com.mobyview.demo.virginiabeach.data;
 
-import io.realm.RealmModel;
-import io.realm.annotations.RealmClass;
-
 /**
  * @author Armando Ochoa
  */
-@RealmClass
-public class Image implements RealmModel {
+public class Image {
 
 //    private File file;
 //

@@ -40,24 +40,24 @@ public class LocalDataSource {
     }
 
     // Returns an empty list when no items were found
-    public <E extends RealmModel> void getPlaces(int type, int page, DataSourceCallback callback) {
-        if (type == Constants.ATTRACTION) {
-            RealmResults<Attraction> results = realm.where(Attraction.class).findAll();
-            if (results.size() > 0) {
-                List<Attraction> items = realm.copyFromRealm(results);
-                callback.onDataLoaded(new Gson().toJson(items));
-            } else {
-                callback.onDataNotAvailable(null);
-            }
-        } else if (type == Constants.RESTAURANT){
-            RealmResults<Restaurant> results = realm.where(Restaurant.class).findAll();
-            if (results.size() > 0) {
-                List<Restaurant> items = realm.copyFromRealm(results);
-                callback.onDataLoaded(new Gson().toJson(items));
-            } else {
-                callback.onDataNotAvailable(null);
-            }
-        }
-    }
+//    public <E extends RealmModel> void getPlaces(int type, int page, DataSourceCallback callback) {
+//        if (type == Constants.ATTRACTION) {
+//            RealmResults<Attraction> results = realm.where(Attraction.class).findAll();
+//            if (results.size() > 0) {
+//                List<Attraction> items = realm.copyFromRealm(results);
+//                callback.onDataLoaded(new Gson().toJson(items));
+//            } else {
+//                callback.onDataNotAvailable(null);
+//            }
+//        } else if (type == Constants.RESTAURANT){
+//            RealmResults<Restaurant> results = realm.where(Restaurant.class).findAll();
+//            if (results.size() > 0) {
+//                List<Restaurant> items = realm.copyFromRealm(results);
+//                callback.onDataLoaded(new Gson().toJson(items));
+//            } else {
+//                callback.onDataNotAvailable(null);
+//            }
+//        }
+//    }
 }
 

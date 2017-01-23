@@ -14,36 +14,29 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.mobyview.demo.virginiabeach.data.Attraction;
-import com.mobyview.demo.virginiabeach.data.Restaurant;
-import com.mobyview.demo.virginiabeach.utilities.Constants;
+import com.mobyview.demo.virginiabeach.data.Place;
 import com.mobyview.demo.virginiabeach.utilities.Utilities;
 
 import java.util.List;
 
 /**
- * An adapter with two view types for: {@link Attraction} and {@link Restaurant}.
+ * An adapter with two view place types: attractions and restaurants.
  *
  * @author Armando Ochoa
  */
 public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Location currentLocation;
-    private List<Object> places;
+    private List<Place> places;
     private int lastPosition = -1;
 
-    public PlaceListAdapter(List<Object> attractions) {
-        this.places = attractions;
+    public PlaceListAdapter(List<Place> places) {
+        this.places = places;
     }
 
     @Override
     public int getItemViewType(int position) {
-        // TODO Add a default case
-        if (places.get(position) instanceof Attraction) {
-            return Constants.ATTRACTION;
-        } else {
-            return Constants.RESTAURANT;
-        }
+        return places.get(position).getPlaceType();
     }
 
     @Override
@@ -51,7 +44,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         RecyclerView.ViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        if (viewType == Constants.ATTRACTION) {
+        if (viewType == Place.TYPE_ATTRACTION) {
             View aView = inflater.inflate(R.layout.attraction_cell_content, parent, false);
             viewHolder = new AttractionViewHolder(aView);
         } else {
@@ -64,44 +57,40 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        final Object place;
+        final Place place = places.get(position);
+        String[] coords = null;
+        if (currentLocation != null && place.getGeo() != null) {
+            if (place.getGeo().getLatlon() != null) {
+                coords = place.getGeo().getLatlon().split(",");
+            }
+        }
         // populate the rows with real data
-        if (holder.getItemViewType() == Constants.ATTRACTION) {
+        if (holder.getItemViewType() == Place.TYPE_ATTRACTION) {
             AttractionViewHolder viewHolder = (AttractionViewHolder) holder;
-            final Attraction attraction = (Attraction) places.get(position);
-            place = attraction;
-            viewHolder.titleTextView.setText(attraction.getTitle());
-            if (attraction.getLocationArea() != null) {
-                viewHolder.locationTextView.setText(attraction.getLocationArea().getName());
+            viewHolder.titleTextView.setText(place.getTitle());
+            if (place.getLocationArea() != null) {
+                viewHolder.locationTextView.setText(place.getLocationArea().getName());
             }
-            if (currentLocation != null && attraction.getGeo() != null) {
-                if (attraction.getGeo().getLatlon() != null) {
-                    String[] coords = attraction.getGeo().getLatlon().split(",");
-                    viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
-                }
+            if (coords != null) {
+                viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
             }
-            if (attraction.getAttractionCategory() != null) {
-                viewHolder.categoryTextView.setText(attraction.getAttractionCategory().getName());
+            if (place.getAttractionCategory() != null) {
+                viewHolder.categoryTextView.setText(place.getAttractionCategory().getName());
             }
-            if (attraction.getPriceRange() != null) {
+            if (place.getPriceRange() != null) {
                 viewHolder.priceTextView.setVisibility(View.VISIBLE);
-                viewHolder.priceTextView.setText(attraction.getPriceRange());
+                viewHolder.priceTextView.setText(place.getPriceRange());
             } else {
                 viewHolder.priceTextView.setVisibility(View.GONE);
             }
         } else {
             RestaurantViewHolder viewHolder = (RestaurantViewHolder) holder;
-            final Restaurant restaurant = (Restaurant) places.get(position);
-            place = restaurant;
-            viewHolder.titleTextView.setText(restaurant.getTitle());
-            if (restaurant.getLocationArea() != null) {
-                viewHolder.locationTextView.setText(restaurant.getLocationArea().getName());
+            viewHolder.titleTextView.setText(place.getTitle());
+            if (place.getLocationArea() != null) {
+                viewHolder.locationTextView.setText(place.getLocationArea().getName());
             }
-            if (currentLocation != null && restaurant.getGeo() != null) {
-                if (restaurant.getGeo().getLatlon() != null) {
-                    String[] coords = restaurant.getGeo().getLatlon().split(",");
-                    viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
-                }
+            if (coords != null) {
+                viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
             }
         }
         // use a fading animation
@@ -111,11 +100,6 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), PlaceDetailActivity.class);
-                if (place instanceof Attraction) {
-                    intent.putExtra("type", Constants.ATTRACTION);
-                } else if (place instanceof Restaurant) {
-                    intent.putExtra("type", Constants.RESTAURANT);
-                }
                 intent.putExtra("object", new Gson().toJson(place));
                 v.getContext().startActivity(intent);
             }

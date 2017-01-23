@@ -4,18 +4,24 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.mobyview.demo.virginiabeach.data.Place;
 import com.mobyview.demo.virginiabeach.data.source.local.LocalDataSource;
 import com.mobyview.demo.virginiabeach.data.source.remote.RemoteDataSource;
 import com.mobyview.demo.virginiabeach.utilities.Constants;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A collection of operations to be sent to the server. A
  * {@link DataSourceCallback} must be passed to the requests in order for the
  * {@link RemoteDataSource} to return the result and/or errors of the remoteDataSource.
- * <p>
+ *
  * Activities should call {@method cancel()} on orientation changes and/or when
  * the activity is destroyed.
  *
@@ -50,33 +56,40 @@ public class DataSource {
 
     public void getPlaces(Context c, final int type, final int page, final DataSourceCallback callback) {
         // first try to get cached places
-        localDataSource = new LocalDataSource(c);
-        localDataSource.getPlaces(type, page, new DataSourceCallback() {
-
-            @Override
-            public void onDataLoaded(String response) {
-                // respond immediately with cache if available
-                Log.d("DataSource", "cache: " + response);
-                callback.onDataLoaded(response);
-            }
-
-            @Override
-            public void onDataNotAvailable(Exception e) {
+//        localDataSource = new LocalDataSource(c);
+//        localDataSource.getPlaces(type, page, new DataSourceCallback() {
+//
+//            @Override
+//            public void onDataLoaded(String response) {
+//                // respond immediately with cache if available
+//                Log.d("DataSource", "cache: " + response);
+//                callback.onDataLoaded(response);
+//            }
+//
+//            @Override
+//            public void onDataNotAvailable(Exception e) {
                 // get data from remote data source
                 try {
                     String query = String.format("parameters[type]=%s&page=%s&pagesize=%s&sort=%s",
-                            URLEncoder.encode((type == Constants.RESTAURANT) ? "restaurant" : "attraction", charset),
+                            URLEncoder.encode((type == Place.TYPE_RESTAURANT) ? "restaurant" : "attraction", charset),
                             URLEncoder.encode(String.valueOf(page), charset),
                             URLEncoder.encode((Constants.PAGE_SIZE / 2) + "", charset),
                             URLEncoder.encode("title", charset));
 
                     // get data from remote data source
-                    remoteDataSource = new RemoteDataSource(new DataSourceCallback() {
+                    remoteDataSource = new RemoteDataSource(new DataSourceCallback.RemoteDataSourceCallback() {
 
                         @Override
                         public void onDataLoaded(String response) {
+                            // convert the JSON objects into places
+                            Type collectionType = new TypeToken<Collection<Place>>(){}.getType();
+                            List<Place> places = new Gson().fromJson(response , collectionType);
+                            for (Place place : places) {
+                                place.setPageNumber(page);
+                                place.setPlaceType(type);
+                            };
                             // TODO persist objects with Realm (LocalDataSource)
-                            callback.onDataLoaded(response);
+                            callback.onDataLoaded(places, type);
                         }
 
                         @Override
@@ -89,7 +102,7 @@ public class DataSource {
                     Log.e(TAG, "Error encoding parameters: " + ex.getMessage());
                     callback.onDataNotAvailable(ex);
                 }
-            }
-        });
+//            }
+//        });
     }
 }

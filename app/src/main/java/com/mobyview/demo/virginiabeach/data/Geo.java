@@ -1,13 +1,9 @@
 package com.mobyview.demo.virginiabeach.data;
 
-import io.realm.RealmModel;
-import io.realm.annotations.RealmClass;
-
 /**
  * @author Armando Ochoa
  */
-@RealmClass
-public class Geo implements RealmModel {
+public class Geo {
 
     private String latlon;
 

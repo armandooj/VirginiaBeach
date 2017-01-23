@@ -1,13 +1,9 @@
 package com.mobyview.demo.virginiabeach.data;
 
-import io.realm.RealmModel;
-import io.realm.annotations.RealmClass;
-
 /**
  * @author Armando Ochoa
  */
-@RealmClass
-public class AttractionCategory implements RealmModel {
+public class AttractionCategory {
 
     private String name;
 

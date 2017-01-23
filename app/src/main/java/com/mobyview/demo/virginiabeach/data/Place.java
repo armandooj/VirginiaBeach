@@ -2,18 +2,15 @@ package com.mobyview.demo.virginiabeach.data;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.realm.RealmModel;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.RealmClass;
-
 /**
  * @author Armando Ochoa
  */
-@RealmClass
-public class Place implements RealmModel {
+public class Place {
 
-    @PrimaryKey
+    public static final int TYPE_ATTRACTION = 0;
+    public static final int TYPE_RESTAURANT = 1;
+
+    // @PrimaryKey
     private long id;
     private String title;
 //    private Image image;
@@ -23,8 +20,15 @@ public class Place implements RealmModel {
     private Geo geo;
     private String address;
 
-    // not an actual attribute, but an auxiliary one
-    public int page;
+    @SerializedName("attraction_category")
+    private AttractionCategory attractionCategory;
+    @SerializedName("price_range")
+    private String priceRange;
+
+    // auxiliary attribute, manually set
+    private int pageNumber;
+    // restaurant or attraction, manually set
+    private int placeType;
 
     public long getId() {
         return id;
@@ -80,5 +84,37 @@ public class Place implements RealmModel {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public int getPlaceType() {
+        return placeType;
+    }
+
+    public void setPlaceType(int placeType) {
+        this.placeType = placeType;
+    }
+
+    public AttractionCategory getAttractionCategory() {
+        return attractionCategory;
+    }
+
+    public void setAttractionCategory(AttractionCategory attractionCategory) {
+        this.attractionCategory = attractionCategory;
+    }
+
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
     }
 }
