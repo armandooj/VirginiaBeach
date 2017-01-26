@@ -80,8 +80,8 @@ public class PlaceDetailActivity extends Activity {
 
         TextView location = (TextView) findViewById(R.id.location);
         location.setTypeface(mFont);
-        if (place.getLocationArea() != null) {
-            location.setText(place.getLocationArea().getName());
+        if (place.getLocation_area() != null) {
+            location.setText(place.getLocation_area().getName());
         }
 
         TextView priceTextView = (TextView) findViewById(R.id.price);
@@ -118,11 +118,11 @@ public class PlaceDetailActivity extends Activity {
     private void setupSpecificViews(Place place) {
         TextView category = (TextView) findViewById(R.id.category);
         if (place.getPlaceType() == Place.TYPE_ATTRACTION) {
-            if (place.getAttractionCategory() != null) {
-                category.setText(place.getAttractionCategory().getName());
+            if (place.getAttraction_category() != null) {
+                category.setText(place.getAttraction_category().getName());
             }
             TextView priceTextView = (TextView) findViewById(R.id.price);
-            priceTextView.setText(place.getPriceRange());
+            priceTextView.setText(place.getPrice_range());
         } else if (place.getPlaceType() == Place.TYPE_RESTAURANT) {
             category.setVisibility(View.GONE);
 

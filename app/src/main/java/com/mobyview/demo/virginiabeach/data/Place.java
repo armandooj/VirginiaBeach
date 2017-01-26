@@ -17,16 +17,13 @@ public class Place extends RealmObject {
     private long id;
     private String title;
     private Image image;
-    @SerializedName("location_area")
-    private LocationArea locationArea;
+    private LocationArea location_area;
     private Description description;
     private Geo geo;
     private String address;
 
-    @SerializedName("attraction_category")
-    private AttractionCategory attractionCategory;
-    @SerializedName("price_range")
-    private String priceRange;
+    private AttractionCategory attraction_category;
+    private String price_range;
 
     // auxiliary attribute, manually set
     private int pageNumber;
@@ -57,12 +54,12 @@ public class Place extends RealmObject {
         this.image = image;
     }
 
-    public LocationArea getLocationArea() {
-        return locationArea;
+    public LocationArea getLocation_area() {
+        return location_area;
     }
 
-    public void setLocationArea(LocationArea locationArea) {
-        this.locationArea = locationArea;
+    public void setLocation_area(LocationArea location_area) {
+        this.location_area = location_area;
     }
 
     public Description getDescription() {
@@ -105,19 +102,19 @@ public class Place extends RealmObject {
         this.placeType = placeType;
     }
 
-    public AttractionCategory getAttractionCategory() {
-        return attractionCategory;
+    public AttractionCategory getAttraction_category() {
+        return attraction_category;
     }
 
-    public void setAttractionCategory(AttractionCategory attractionCategory) {
-        this.attractionCategory = attractionCategory;
+    public void setAttraction_category(AttractionCategory attraction_category) {
+        this.attraction_category = attraction_category;
     }
 
-    public String getPriceRange() {
-        return priceRange;
+    public String getPrice_range() {
+        return price_range;
     }
 
-    public void setPriceRange(String priceRange) {
-        this.priceRange = priceRange;
+    public void setPrice_range(String price_range) {
+        this.price_range = price_range;
     }
 }

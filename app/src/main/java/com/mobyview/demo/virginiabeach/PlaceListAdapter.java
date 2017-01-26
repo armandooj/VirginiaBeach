@@ -70,18 +70,18 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (holder.getItemViewType() == Place.TYPE_ATTRACTION) {
             AttractionViewHolder viewHolder = (AttractionViewHolder) holder;
             viewHolder.titleTextView.setText(place.getTitle());
-            if (place.getLocationArea() != null) {
-                viewHolder.locationTextView.setText(place.getLocationArea().getName());
+            if (place.getLocation_area() != null) {
+                viewHolder.locationTextView.setText(place.getLocation_area().getName());
             }
             if (coords != null) {
                 viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
             }
-            if (place.getAttractionCategory() != null) {
-                viewHolder.categoryTextView.setText(place.getAttractionCategory().getName());
+            if (place.getAttraction_category() != null) {
+                viewHolder.categoryTextView.setText(place.getAttraction_category().getName());
             }
-            if (place.getPriceRange() != null) {
+            if (place.getPrice_range() != null) {
                 viewHolder.priceTextView.setVisibility(View.VISIBLE);
-                viewHolder.priceTextView.setText(place.getPriceRange());
+                viewHolder.priceTextView.setText(place.getPrice_range());
             } else {
                 viewHolder.priceTextView.setVisibility(View.GONE);
             }
@@ -93,8 +93,8 @@ public class PlaceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         } else {
             RestaurantViewHolder viewHolder = (RestaurantViewHolder) holder;
             viewHolder.titleTextView.setText(place.getTitle());
-            if (place.getLocationArea() != null) {
-                viewHolder.locationTextView.setText(place.getLocationArea().getName());
+            if (place.getLocation_area() != null) {
+                viewHolder.locationTextView.setText(place.getLocation_area().getName());
             }
             if (coords != null) {
                 viewHolder.distanceTextView.setText(Utilities.getDistanceFromCoordinates(currentLocation, coords) + " miles");
